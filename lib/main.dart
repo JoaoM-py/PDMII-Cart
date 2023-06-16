@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/theme.dart';
+import 'package:flutter_app/products.dart';
+
+
 
 void main() {
   runApp(MyApp());
@@ -8,9 +12,11 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
     // define Material Design
     return MaterialApp(
       title: 'Sample Input',
+      theme: tema,
       home: Forms(), // inicia página principal
     );
   }
@@ -61,7 +67,7 @@ class FormsState extends State<Forms> {
     return Scaffold(
       appBar: AppBar(
         // barra do aplicativo
-        title: const Text('Shoe Store'),
+        title: const Text('Jhon Shoes'),
       ),
       body: Align(
         // corpo do aplicativo
@@ -83,14 +89,7 @@ class FormsState extends State<Forms> {
                     // customização
                     hintText: 'Entre com email', //hint
                     prefixIcon:
-                        const Icon(Icons.account_circle_outlined), //icon
-                    enabledBorder: OutlineInputBorder(
-                      //borda ao redor da entrada
-                      borderSide: BorderSide(color: borderColor), //cor da borda
-                    ), //quando receber o foco, altera cor da borda
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue),
-                    ),
+                        const Icon(Icons.email_outlined) //icon
                   ),
                 onChanged: (_) => setState(() {
                   _IsValid = _email.text.isNotEmpty && _senha.text.isNotEmpty; 
@@ -108,16 +107,9 @@ class FormsState extends State<Forms> {
                   keyboardType: TextInputType.text, // tipo de entrada
                   decoration: InputDecoration(
                     // customização
-                    hintText: 'Entre com número', //hint
+                    hintText: 'Entre com a senha', //hint
                     prefixIcon:
-                        const Icon(Icons.account_circle_outlined), //icon
-                    enabledBorder: OutlineInputBorder(
-                      //borda ao redor da entrada
-                      borderSide: BorderSide(color: borderColor), //cor da borda
-                    ), //quando receber o foco, altera cor da borda
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue),
-                    ),
+                        const Icon(Icons.password_outlined), //icon
                   ),
 
                 onChanged: (_) => setState(() {
@@ -139,6 +131,7 @@ class FormsState extends State<Forms> {
                       children: [
 
                         ElevatedButton(
+                          style: ElevatedButton.styleFrom(backgroundColor:  Color.fromRGBO(191, 33, 46, 1)),
                           onPressed:_IsValid ?() {
                             Navigator.push(
                               context,
@@ -171,14 +164,13 @@ class FormsState extends State<Forms> {
 
 class SecondPage extends StatefulWidget {
   @override
-  SecondPageState createState() => SecondPageState();
+  SecondPageState createState() => SecondPageState(); 
 }
 
 class SecondPageState extends State<SecondPage> {
-    //define conteúdo de listView
-  final List<String> items = ['Chuteira Society Fifty III Umbro - Preto+Salmão', 
-  'Chuteira Society Nike Beco 2 TF - Preto+Branco', 
-  'Chuteira Futsal Adidas Artilheira VI - Preto+Pink'];
+
+  final List<Item> items = Item.getProducts();
+
   // controller para input nome
   final TextEditingController _nome = TextEditingController();
   // define cores para mensagens de aviso
@@ -189,6 +181,7 @@ class SecondPageState extends State<SecondPage> {
   String _result = "";
   String _selectItem = "";
   bool envio = false;
+
 
   // obtém item selecionado e armazena
   void changeSelectedItem(String e) {
@@ -239,7 +232,7 @@ class SecondPageState extends State<SecondPage> {
         changeBorderColor(Colors.red);
       } else {
         changeEnvio(true);
-        changeTextColor(Colors.red);
+        changeTextColor( Color.fromRGBO(191, 33, 46, 1));
         changeBorderColor(Colors.grey);
 
         _result = nome;
@@ -267,6 +260,8 @@ class SecondPageState extends State<SecondPage> {
     });
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -278,20 +273,19 @@ class SecondPageState extends State<SecondPage> {
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: [
-            const Divider(),//linha divisória
             const SizedBox(height: 16.0),
             const Text(
-              'Produtos',
-              style: TextStyle(fontSize: 24.0, color: Colors.blue),
+              'Lista de produtos',
+              style: TextStyle(fontSize: 24.0, color: Color.fromRGBO(13, 0, 0, 1)),
             ),
-            const Divider(),// linha divisória
+            const SizedBox(height: 16.0),
             //Expanded( if view all items listview
             Container(
               width: 600,
               height: 200,
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: Colors.grey,
+                  color: Color.fromRGBO(13, 0, 0, 1),
                   width: 1.0,
                 ),
               ),
@@ -299,23 +293,26 @@ class SecondPageState extends State<SecondPage> {
                 shrinkWrap: true, // if scroll
                 itemCount: items.length,
                 itemBuilder: (BuildContext context, int index) {
+                  final items_card = items[index];
                   return ListTile(
-                    //leading: Image(image: items[index]),
-                    title: Text(items[index]),
+                    leading: Image.asset(items_card.image),
+                    title: Text(items_card.title),
                     //subtitle: Text(items[index]),
                     onTap: () {
                       // Handle tap on the item
-                      print(' Porduto: ${items[index]}');
-                      changeSelectedItem('Porduto: ${items[index]}');
+                      print('${items[index].title}');
+                      changeSelectedItem('Porduto: ${items[index].title}');
                     },
                   );
                 },
               ),
             ),
+            const Divider(),
             const SizedBox(height: 16.0),
+            
             const Text(
               'Quantidade',
-              style: TextStyle(fontSize: 24.0, color: Colors.blue),
+              style: TextStyle(fontSize: 24.0, color: Color.fromRGBO(13, 0, 0, 1)),
             ),
             const SizedBox(height: 16.0),
             SizedBox(
@@ -327,11 +324,8 @@ class SecondPageState extends State<SecondPage> {
                   decoration: InputDecoration(
                     hintText: 'Quantidade',
                     prefixIcon: const Icon(Icons.account_circle_outlined),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: borderColor),
-                    ),
                     focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue),
+                      borderSide: BorderSide(color: Color.fromRGBO(13, 0, 0, 1)),
                     ),
                   ),
                 )),
@@ -345,6 +339,7 @@ class SecondPageState extends State<SecondPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         ElevatedButton(
+                          style: ElevatedButton.styleFrom(backgroundColor:  Color.fromRGBO(191, 33, 46, 1)),
                           onPressed: _enviar,
                           child: const Text('Enviar'),
                         ),
@@ -371,6 +366,8 @@ class SecondPageState extends State<SecondPage> {
 
 class ConfirmPage extends StatelessWidget{
   final String result;
+  
+
 
   const ConfirmPage({Key? key, required this.result})
       : super(key: key);
@@ -380,6 +377,7 @@ class ConfirmPage extends StatelessWidget{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.secondary,
         title: const Text('Confirmação do pedido'),
       ),
       body: Align(
@@ -389,9 +387,9 @@ class ConfirmPage extends StatelessWidget{
           children: [
             // display parametres received
             Text(result,
-                style: const TextStyle(fontSize: 24.0, color: Colors.red)),
-
+                style: const TextStyle(fontSize: 24.0, color: Color.fromRGBO(13, 0, 0, 1))),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor:  Color.fromRGBO(191, 33, 46, 1)),
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => FinalPage()));
               },
@@ -422,8 +420,8 @@ class FinalPage extends StatelessWidget{
           children: [
             Image.asset('assets/images/logo.jpg'),
             const SizedBox(height: 16.0),
-            Text("Pedido confirmado!",style: const TextStyle(fontSize: 24.0, color: Colors.green)),
-            Text("Obrigado e volte sempre!",style: const TextStyle(fontSize: 24.0, color: Colors.green)),
+            Text("Pedido confirmado!",style: const TextStyle(fontSize: 24.0, color: Color.fromRGBO(13, 0, 0, 1))),
+            Text("Obrigado e volte sempre!",style: const TextStyle(fontSize: 24.0, color: Color.fromRGBO(13, 0, 0, 1))),
 
 
 
@@ -434,4 +432,3 @@ class FinalPage extends StatelessWidget{
     );
   }
 }
-
